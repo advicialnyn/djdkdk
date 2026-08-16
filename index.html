@@ -20,7 +20,6 @@
     --parchment:#ede3d0;
     --muted:#a89a82;
     --line: rgba(184,134,59,0.28);
-    --danger:#c1440e;
   }
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
@@ -61,7 +60,6 @@
   }
   .subtitle{
     font-family:'Playfair Display',serif;
-    font-style:italic;
     font-size:14px;
     color:var(--muted);
   }
@@ -94,7 +92,6 @@
   }
   .hint{font-size:12.5px;color:var(--muted);margin:2px 0 14px;line-height:1.55;}
 
-  /* ---- circuit diagram ---- */
   .diagram-box{
     background:radial-gradient(ellipse at center, #221a12 0%, #170f0a 100%);
     border:1px solid var(--line);
@@ -108,7 +105,6 @@
   .arm-label{font-family:'JetBrains Mono',monospace;font-size:12px;fill:var(--parchment);}
   .needle{transform-origin:200px 180px; transition:transform .35s cubic-bezier(.2,.9,.3,1.2);}
 
-  /* ---- controls ---- */
   .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
   .btn{
     font-family:'JetBrains Mono',monospace;
@@ -176,6 +172,15 @@
     font-weight:700;
     box-shadow:0 0 12px -2px rgba(224,181,99,.6);
   }
+  .plug.inf-plug{
+    border-color:var(--copper);
+    color:var(--copper);
+  }
+  .plug.inf-plug.pulled{
+    background:radial-gradient(circle at 35% 30%, #e07850, var(--copper));
+    color:#fff;
+  }
+
   .sum-readout{
     margin-top:10px;
     font-family:'JetBrains Mono',monospace;
@@ -197,9 +202,10 @@
   .status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--brass-dim);margin-right:6px;}
   .status-dot.on{background:var(--verdigris);box-shadow:0 0 8px var(--verdigris);}
 
+  /* ---- Curved Meter Gauge ---- */
   .deflection-readout{
     text-align:center;
-    padding:14px;
+    padding:18px 14px 10px;
     border-radius:6px;
     background:var(--wood);
     border:1px solid var(--line);
@@ -216,39 +222,15 @@
   }
   .deflection-readout .dir{
     font-family:'Noto Serif Bengali',serif;
-    font-size:20px;
+    font-size:18px;
     color:var(--brass-light);
     font-weight:700;
   }
   .deflection-readout .sub{font-size:12px;color:var(--muted);margin-top:2px;}
 
-  .scale-gauge{margin-top:16px;padding:0 4px;}
-  .scale-track{
-    position:relative;
-    height:10px;
-    background:linear-gradient(90deg, var(--verdigris) 0%, var(--wood) 48%, var(--wood) 52%, var(--copper) 100%);
-    opacity:.55;
-    border:1px solid var(--brass-dim);
-    border-radius:5px;
-  }
-  .scale-center-mark{
-    position:absolute;left:50%;top:-5px;width:2px;height:20px;
-    background:var(--brass-light);transform:translateX(-50%);
-  }
-  .scale-pointer{
-    position:absolute;top:-9px;width:3px;height:28px;
-    background:var(--parchment);left:50%;transform:translateX(-50%);
-    border-radius:2px;
-    box-shadow:0 0 10px 2px rgba(224,181,99,.7);
-    transition:left .35s cubic-bezier(.2,.9,.3,1.2);
-  }
-  .scale-ticks{
-    display:flex;justify-content:space-between;margin-top:8px;
-    font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--muted);
-  }
-  .scale-label{
-    text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;
-    color:var(--muted);letter-spacing:.08em;margin-top:10px;text-transform:uppercase;
+  .curved-meter-container{
+    max-width:320px;
+    margin:12px auto 0;
   }
 
   table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12.5px;}
@@ -291,7 +273,7 @@
   <!-- STEP 1: SET THE UNKNOWN -->
   <section class="card">
     <h2><span class="num">1</span> <span class="bn">গ্যালভানোমিটার প্রস্তুত করুন</span></h2>
-    <p class="hint">এখানে আপনার গ্যালভানোমিটারের একটি "প্রকৃত" রোধ সেট করুন (বাস্তব পরীক্ষায় এটি অজানা থাকে) — অথবা এলোমেলোভাবে একটি অজানা মান তৈরি করুন এবং নিচের ধাপগুলো দিয়ে সেটি বের করার চেষ্টা করুন।</p>
+    <p class="hint">এখানে আপনার গ্যালভানোমিটারের একটি "প্রকৃত" রোধ সেট করুন — অথবা এলোমেলোভাবে একটি অজানা মান তৈরি করুন।</p>
     <div class="row">
       <div>
         <label class="field">true G (Ω) — hidden</label>
@@ -300,13 +282,13 @@
       <button class="btn" id="randomizeBtn">🎲 এলোমেলো মান / Randomize</button>
       <button class="btn ghost" id="lockBtn">🔒 লক করুন / Lock &amp; Hide</button>
     </div>
-    <div id="lockedStatus" class="reveal-line" style="display:none;margin-top:12px;">✓ গ্যালভানোমিটার লক করা হয়েছে। এখন এর মান আর দেখা যাবে না, পরীক্ষা করে বের করুন।</div>
+    <div id="lockedStatus" class="reveal-line" style="display:none;margin-top:12px;">✓ গ্যালভানোমিটার লক করা হয়েছে। পরীক্ষা করে এর মান বের করুন।</div>
   </section>
 
   <!-- CIRCUIT DIAGRAM -->
   <section class="card">
     <h2><span class="num">2</span> <span class="bn">হুইটস্টোন ব্রীজ বর্তনী</span></h2>
-    <p class="hint">P (AB), Q (BC), R (AD) — তিনটি রোধ বাহু। G (DC) হলো পরীক্ষাধীন গ্যালভানোমিটার, যা চতুর্থ বাহুতে (S) থাকে। K₂ হলো B–D সংযোগকারী চাবি। K₁ চাপলে G-তে স্থির বিক্ষেপ হয়; K₂ চাপলে সাম্যাবস্থায় বিক্ষেপ অপরিবর্তিত থাকে।</p>
+    <p class="hint">P (AB), Q (BC), R (AD) — তিনটি রোধ বাহু। G (DC) হলো গ্যালভানোমিটার। K₂ হলো B–D সংযোগকারী চাবি।</p>
     <div class="diagram-box">
       <svg viewBox="0 0 300 320">
         <line class="wire" x1="50" y1="150" x2="150" y2="40" />
@@ -345,7 +327,6 @@
   <!-- STEP 2: RATIO ARMS -->
   <section class="card">
     <h2><span class="num">3</span> <span class="bn">অনুপাত বাহু নির্বাচন করুন — P ও Q</span></h2>
-    <p class="hint">প্রিসেট বোতাম চাপুন, অথবা সরাসরি বক্সে মান টাইপ করুন।</p>
     <div class="grid2">
       <div>
         <label class="field">P (Ω)</label>
@@ -363,21 +344,20 @@
   <!-- STEP 3: R PLUG BOARD -->
   <section class="card">
     <h2><span class="num">4</span> <span class="bn">তৃতীয় বাহুর রোধ (R) — প্লাগ তুলুন</span></h2>
-    <p class="hint">প্রকৃত পোস্ট অফিস বাক্সের মতো প্লাগ তুলুন — অথবা নিচের বক্সে সরাসরি R-এর মান টাইপ করুন।</p>
+    <p class="hint">প্লাগ তুলুন — অসীম রোধের জন্য '∞' প্লাগ ব্যবহার করুন।</p>
     <div class="plugboard" id="plugboard"></div>
     <div class="row" style="margin-top:12px;align-items:flex-end;">
       <div>
         <label class="field">R — সরাসরি মান / direct entry (Ω)</label>
-        <input type="number" id="rInput" step="1" min="0" value="0">
+        <input type="text" id="rInput" value="0">
       </div>
       <div class="sum-readout" style="margin-top:0;">প্লাগ যোগফল / plug sum = <b id="rSum">0</b> Ω</div>
     </div>
   </section>
 
-  <!-- STEP 4: KEYS -->
+  <!-- STEP 4: KEYS & GALVANOMETER METER -->
   <section class="card">
     <h2><span class="num">5</span> <span class="bn">ব্যাটারি, রিওস্ট্যাট ও চাবি</span></h2>
-    <p class="hint">নিয়ম: প্রথমে K₁ (ব্যাটারি চাবি) চাপুন, তারপর K₂ (গ্যালভানোমিটার চাবি) ট্যাপ করে পর্যবেক্ষণ করুন বিক্ষেপের পরিবর্তন হয় কিনা।</p>
     <div class="row">
       <div>
         <label class="field">E — ব্যাটারি (V)</label>
@@ -398,20 +378,62 @@
         <button class="btn primary" id="k2btn" disabled>ট্যাপ / Tap K₂</button>
       </div>
     </div>
+
+    <!-- CURVED GALVANOMETER METER DISPLAY -->
     <div class="deflection-readout" id="readout">
       <div class="digital" id="digitalReadout">0.00 µA</div>
       <div class="dir">—</div>
       <div class="sub">K₁ চাপুন, তারপর K₂ ট্যাপ করুন</div>
-      <div class="scale-gauge">
-        <div class="scale-track">
-          <div class="scale-center-mark"></div>
-          <div class="scale-pointer" id="scalePointer"></div>
-        </div>
-        <div class="scale-ticks">
-          <span>−300</span><span>−200</span><span>−100</span><span>0</span><span>100</span><span>200</span><span>300</span>
-        </div>
-        <div class="scale-label bn">বিক্ষেপ কাঁটা (গ্যালভানোমিটার স্কেল)</div>
+
+      <div class="curved-meter-container">
+        <svg viewBox="0 0 300 170">
+          <!-- Arc Track -->
+          <path d="M 30 140 A 120 120 0 0 1 270 140" fill="none" stroke="var(--brass-dim)" stroke-width="4" />
+          <path d="M 30 140 A 120 120 0 0 1 270 140" fill="none" stroke="var(--verdigris)" stroke-width="2" stroke-dasharray="4 4" opacity="0.7"/>
+
+          <!-- Tick Marks & Numbers (-300 to +300) -->
+          <!-- -300 -->
+          <line x1="30" y1="140" x2="42" y2="135" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="18" y="152" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">-300</text>
+
+          <!-- -200 -->
+          <line x1="62" y1="85" x2="72" y2="88" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="44" y="85" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">-200</text>
+
+          <!-- -100 -->
+          <line x1="102" y1="46" x2="108" y2="56" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="90" y="38" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">-100</text>
+
+          <!-- 0 -->
+          <line x1="150" y1="20" x2="150" y2="32" stroke="var(--copper)" stroke-width="2.5"/>
+          <text x="150" y="12" fill="var(--parchment)" font-size="11" font-weight="bold" font-family="JetBrains Mono" text-anchor="middle">0</text>
+
+          <!-- +100 -->
+          <line x1="198" y1="46" x2="192" y2="56" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="210" y="38" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">100</text>
+
+          <!-- +200 -->
+          <line x1="238" y1="85" x2="228" y2="88" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="256" y="85" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">200</text>
+
+          <!-- +300 -->
+          <line x1="270" y1="140" x2="258" y2="135" stroke="var(--brass-light)" stroke-width="2"/>
+          <text x="282" y="152" fill="var(--muted)" font-size="10" font-family="JetBrains Mono">300</text>
+
+          <!-- Subdivisions (Ticks) -->
+          <path d="M 43 110 L 51 108 M 80 64 L 86 71 M 125 30 L 127 40 M 175 30 L 173 40 M 220 64 L 214 71 M 257 110 L 249 108" stroke="var(--brass-dim)" stroke-width="1.5"/>
+
+          <!-- Pivot Base -->
+          <circle cx="150" cy="140" r="8" fill="var(--brass)" stroke="var(--brass-light)" stroke-width="2"/>
+
+          <!-- Rotating Meter Needle -->
+          <g id="dialNeedleGroup" style="transform-origin: 150px 140px; transition: transform 0.35s cubic-bezier(.2,.9,.3,1.2);">
+            <line x1="150" y1="140" x2="150" y2="26" stroke="var(--copper)" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="150" cy="140" r="3" fill="var(--parchment)"/>
+          </g>
+        </svg>
       </div>
+      <div class="scale-label bn" style="margin-top:2px;">বিক্ষেপ কাঁটা (গ্যালভানোমিটার স্কেল)</div>
     </div>
   </section>
 
@@ -436,7 +458,6 @@
   <!-- STEP 5: FINAL CALCULATION -->
   <section class="card">
     <h2><span class="num">7</span> <span class="bn">চূড়ান্ত হিসাব</span></h2>
-    <p class="hint">P ও Q অনপাতে R-এর মান সাম্যাবস্থায় এনে নিচে বসান।</p>
     <div class="row">
       <div>
         <label class="field">R₁ (Ω)</label>
@@ -472,16 +493,16 @@
     readings: []
   };
 
-  const PLUG_VALUES = [1,2,3,4,10,20,30,40,100,200,300,400,1000,2000,3000];
+  const PLUG_VALUES = [1,2,3,4,10,20,30,40,100,200,300,400,1000,2000,3000, '∞'];
   const RATIO_VALUES = [1,10,100,1000];
 
   const plugboard = document.getElementById('plugboard');
   PLUG_VALUES.forEach(v=>{
     state.plugs[v]=false;
     const d = document.createElement('div');
-    d.className='plug';
-    d.textContent=v;
-    d.dataset.val=v;
+    d.className = 'plug' + (v === '∞' ? ' inf-plug' : '');
+    d.textContent = v;
+    d.dataset.val = v;
     d.addEventListener('click', ()=>{
       state.plugs[v] = !state.plugs[v];
       d.classList.toggle('pulled', state.plugs[v]);
@@ -492,16 +513,27 @@
   });
 
   function updateRSum(){
-    let sum=0;
-    for(const v of PLUG_VALUES){ if(state.plugs[v]) sum+=v; }
-    document.getElementById('rSum').textContent = sum;
-    document.getElementById('rInput').value = sum;
-    return sum;
+    let sum = 0;
+    let isInf = false;
+    for(const v of PLUG_VALUES){
+      if(state.plugs[v]) {
+        if(v === '∞') isInf = true;
+        else sum += v;
+      }
+    }
+    const displayVal = isInf ? '∞' : sum;
+    document.getElementById('rSum').textContent = displayVal;
+    document.getElementById('rInput').value = displayVal;
+    return isInf ? Infinity : sum;
   }
+
   function currentR(){
-    const v = parseFloat(document.getElementById('rInput').value);
+    const valStr = String(document.getElementById('rInput').value).trim();
+    if(valStr === '∞' || valStr.toLowerCase() === 'inf' || valStr.toLowerCase() === 'infinity') return Infinity;
+    const v = parseFloat(valStr);
     return isNaN(v) ? 0 : v;
   }
+
   document.getElementById('rInput').addEventListener('input', ()=>{
     if(state.k1) computeAndShowDeflection(false);
   });
@@ -558,6 +590,7 @@
   const k2btn = document.getElementById('k2btn');
   const k1dot = document.getElementById('k1dot');
   const needle = document.getElementById('needle');
+  const dialNeedleGroup = document.getElementById('dialNeedleGroup');
   const readout = document.getElementById('readout');
 
   k1btn.addEventListener('click', ()=>{
@@ -573,24 +606,21 @@
     }
   });
 
-  function updateScalePointer(val){
-    const clamped = Math.max(-300, Math.min(300, val));
-    const pct = ((clamped + 300) / 600) * 100;
-    document.getElementById('scalePointer').style.left = pct + '%';
-  }
-
   function resetNeedle(){
     needle.style.transform = 'rotate(0deg)';
+    dialNeedleGroup.style.transform = 'rotate(0deg)';
     document.getElementById('digitalReadout').textContent = '0.00 µA';
     readout.querySelector('.dir').textContent='—';
     readout.querySelector('.sub').textContent='K₁ চাপুন, তারপর K₂ ট্যাপ করুন';
-    updateScalePointer(0);
   }
 
   function calculateGalvanometerCurrent(k2Closed){
-    const P = state.P, Q = state.Q, R = currentR(), G = state.trueG || 10;
+    const P = state.P, Q = state.Q, R_val = currentR(), G = state.trueG || 10;
     const E = parseFloat(document.getElementById('eInput').value) || 2;
     const Rh = parseFloat(document.getElementById('rhInput').value) || 50;
+
+    // Numerical approximation for infinity
+    const R = R_val === Infinity ? 1e9 : R_val;
 
     let Ig = 0;
     if (!k2Closed) {
@@ -624,9 +654,10 @@
     const Ig_display = k2Tapped ? Ig_closed : Ig_open;
     const microAmps = Ig_display * 1e6;
 
-    const angle = Math.min(Math.max((microAmps / 300) * 45, -60), 60);
+    // Angle mapping: -300µA = -60deg, 0µA = 0deg, +300µA = +60deg
+    const angle = Math.min(Math.max((microAmps / 300) * 60, -75), 75);
     needle.style.transform = `rotate(${angle}deg)`;
-    updateScalePointer(microAmps);
+    dialNeedleGroup.style.transform = `rotate(${angle}deg)`;
 
     document.getElementById('digitalReadout').textContent = microAmps.toFixed(1) + ' µA';
 
@@ -648,14 +679,15 @@
       }
     }
 
+    const rDisp = currentR() === Infinity ? '∞' : currentR();
     readout.querySelector('.dir').textContent = statusText;
-    readout.querySelector('.sub').textContent = `P=${state.P}Ω  Q=${state.Q}Ω  R=${currentR()}Ω  G(true)=${state.trueG}Ω`;
+    readout.querySelector('.sub').textContent = `P=${state.P}Ω  Q=${state.Q}Ω  R=${rDisp}Ω  G(true)=${state.trueG}Ω`;
 
     if (k2Tapped) {
       state.readings.push({
         P: state.P,
         Q: state.Q,
-        R: currentR(),
+        R: rDisp,
         dir: dirClass,
         dirLabel: dirClass === 'right' ? 'বৃদ্ধি' : (dirClass === 'left' ? 'হ্রাস' : 'সাম্য'),
         val: microAmps
